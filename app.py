@@ -30,6 +30,8 @@ from utils.utils import (
     pure_comma_separation
 )
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 class TextGeneration:
     def __init__(self):
@@ -43,19 +45,18 @@ class TextGeneration:
         self.task = "text2text-generation"
         self.model_name_or_path = "flax-community/t5-recipe-generation"
         self.color_frame = "#ffffff"
-        self.main_frame = "C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/frame/recipe-bg.png"
-        self.no_food = "C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/frame/no_food.png"
-        self.logo_frame = "C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/frame/logo1.png"
+        self.main_frame = os.path.join(BASE_DIR, "asset", "frame", "recipe-bg.png")
+        self.no_food = os.path.join(BASE_DIR, "asset", "frame", "no_food.png")
+        self.logo_frame = os.path.join(BASE_DIR, "asset", "frame", "logo1.png")
         self.chef_frames = {
-            "scheherazade": "C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/frame/food-image-logo-bg-s.png",
-            "giovanni": "C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/frame/food-image-logo-bg-g.png",
+            "scheherazade": os.path.join(BASE_DIR, "asset", "frame", "food-image-logo-bg-s.png"),
+            "giovanni": os.path.join(BASE_DIR, "asset", "frame", "food-image-logo-bg-g.png"),
         }
         self.fonts = {
-             "title": ImageFont.truetype("C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/fonts/Poppins-Bold.ttf", 70),
-             "sub_title": ImageFont.truetype("C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/fonts/Poppins-Medium.ttf", 30),
-             "body_bold": ImageFont.truetype("C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/fonts/Montserrat-Bold.ttf", 22),
-             "body": ImageFont.truetype("C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/fonts/Montserrat-Regular.ttf", 18),
-
+             "title": ImageFont.truetype(os.path.join(BASE_DIR, "asset", "fonts", "Poppins-Bold.ttf"), 70),
+             "sub_title": ImageFont.truetype(os.path.join(BASE_DIR, "asset", "fonts", "Poppins-Medium.ttf"), 30),
+             "body_bold": ImageFont.truetype(os.path.join(BASE_DIR, "asset", "fonts", "Montserrat-Bold.ttf"), 22),
+             "body": ImageFont.truetype(os.path.join(BASE_DIR, "asset", "fonts", "Montserrat-Regular.ttf"), 18),
          }
         set_seed(42)
 
@@ -121,11 +122,9 @@ class TextGeneration:
 
     def generate(self, items, generation_kwargs):
         recipe = self.dummy_outputs[0]
-        # recipe = self.dummy_outputs[random.randint(0, len(self.dummy_outputs) - 1)]
 
         if not self.debug:
             generation_kwargs["num_return_sequences"] = 1
-            # generation_kwargs["return_full_text"] = False
             generation_kwargs["return_tensors"] = True
             generation_kwargs["return_text"] = False
 
@@ -161,180 +160,3 @@ def load_text_generator():
     generator = TextGeneration()
     generator.load()
     return generator
-
-
-chef_top = {
-    "max_length": 512,
-    "min_length": 64,
-    "no_repeat_ngram_size": 3,
-    "do_sample": True,
-    "top_k": 60,
-    "top_p": 0.95,
-    "num_return_sequences": 1
-}
-chef_beam = {
-    "max_length": 512,
-    "min_length": 64,
-    "no_repeat_ngram_size": 3,
-    "early_stopping": True,
-    "num_beams": 5,
-    "length_penalty": 1.5,
-    "num_return_sequences": 1
-}
-
-
-def main():
-    st.set_page_config(
-        page_title="Chef Transformer",
-        page_icon="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgfKysGSTMR0Kk3yPGsz-efVKSMnso2l5shfRuLCgloUzD5A81X2ed1_BSIoaTa6vQb9w&usqp=CAU",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
-    
-    generator = load_text_generator()
-    # if hasattr(st, "session_state"):
-    #     if 'get_random_frame' not in st.session_state:
-    #         st.session_state.get_random_frame = generator.frames[0]
-    # else:
-    #     get_random_frame = generator.frames[0]
-
-    remote_css("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@600&display=swap")
-    local_css("C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/css/style.css")
-    
-    col1, col2 = st.columns([6, 4])
-    with col2:
-        st.image(load_image_from_local("C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/images/logo1.png"), width=400)
-        st.markdown(meta.SIDEBAR_INFO, unsafe_allow_html=True)
-
-        with st.expander("Where did this story start?", expanded=True):
-            st.markdown(meta.STORY, unsafe_allow_html=True)
-
-    with col1:
-        st.markdown(meta.hide_streamlit_style, unsafe_allow_html=True)
-        st.markdown(meta.hide_decoration_bar_style, unsafe_allow_html=True)
-        st.markdown(meta.hide_expander,unsafe_allow_html=True)
-        st.markdown(meta.HEADER_INFO, unsafe_allow_html=True)
-        
-        st.markdown(
-            f"""
-            <style>
-            .stApp {{
-                background-image:url("C:/Users/Swathi/Documents/chef-transformer-main/chef-transformer-main/asset/images/back_ground.jpg");
-                background-attachment:fixed;
-                background-size: cover; 
-         }}
-
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-        
-        st.markdown(meta.CHEF_INFO, unsafe_allow_html=True)
-        chef = st.selectbox("Choose your chef", index=0, options=["Chef Scheherazade", "Chef Giovanni"])
-
-        prompts = list(EXAMPLES.keys()) + ["Custom"]
-        prompt = st.selectbox(
-            'Examples (select from this list)',
-            prompts,
-            # index=len(prompts) - 1,
-            index=0
-        )
-
-        if prompt == "Custom":
-            prompt_box = ""
-        else:
-            prompt_box = EXAMPLES[prompt]
-
-        items = st.text_area(
-            'Insert your food items here (separated by `,`): ',
-            pure_comma_separation(prompt_box, return_list=False),
-        )
-        items = pure_comma_separation(items, return_list=False)
-        entered_items = st.empty()
-
-    recipe_button = st.button('Get Recipe!')
-   
-
-    st.markdown(
-        "<hr />",
-        unsafe_allow_html=True
-    )
-    if recipe_button:
-        # if hasattr(st, "session_state"):
-        #     st.session_state.get_random_frame = generator.frames[random.randint(0, len(generator.frames)) - 1]
-        # else:
-        #     get_random_frame = generator.frames[random.randint(0, len(generator.frames)) - 1]
-
-        entered_items.markdown("**Generating recipe for:** " + items)
-        with st.spinner("Cooking..."):
-
-            if not isinstance(items, str) or not len(items) > 1:
-                entered_items.markdown(
-                    f"**{chef}** would like to know what ingredients do you like to use in "
-                    f"your food? "
-                )
-            else:
-                gen_kw = chef_top if chef == "Chef Scheherazade" else chef_beam
-                generated_recipe = generator.generate(items, gen_kw)
-
-                title = generated_recipe["title"]
-                food_image = generated_recipe["image"]
-                food_image = load_image_from_url(food_image, rgba_mode=True, default_image=generator.no_food)
-                food_image = image_to_base64(food_image)
-
-                ingredients = ext.ingredients(
-                    generated_recipe["ingredients"],
-                    pure_comma_separation(items, return_list=True)
-                )
-                # ingredients = [textwrap.fill(item, 10).replace("\n", "<br />   ") for item in ingredients]
-
-                directions = ext.directions(generated_recipe["directions"])
-                # directions = [textwrap.fill(item, 70).replace("\n", "<br />   ") for item in directions]
-
-                generated_recipe["by"] = chef
-
-                r1, r2 = st.columns([6, 2])
-
-                with r2:
-                    # st.write(st.session_state.get_random_frame)
-                    # if hasattr(st, "session_state"):
-                    #     recipe_post = generator.generate_frame(generated_recipe, st.session_state.get_random_frame)
-                    # else:
-                    #     recipe_post = generator.generate_frame(generated_recipe, get_random_frame)
-
-                    recipe_post = generator.generate_frame(generated_recipe, chef.split()[-1])
-
-                    st.image(
-                        recipe_post,
-                        # width=500,
-                        caption="Save image and share on your social media",
-                        use_column_width="auto",
-                        output_format="PNG"
-                    )
-
-                with r1:
-                    st.markdown(
-                        " ".join([
-                            "<div class='r-text-recipe'>",
-                            "<div class='food-title'>",
-                            f"<img src='{food_image}' />",
-                            f"<h2 class='font-title text-bold'>{title}</h2>",
-                            "</div>",
-                            '<div class="divider"><div class="divider-mask"></div></div>',
-                            "<h3 class='ingredients font-body text-bold'>Ingredients</h3>",
-                            "<ul class='ingredients-list font-body'>",
-                            " ".join([f'<li>{item}</li>' for item in ingredients]),
-                            "</ul>",
-                            "<h3 class='directions font-body text-bold'>Directions</h3>",
-                            "<ol class='ingredients-list font-body'>",
-                            " ".join([f'<li>{item}</li>' for item in directions]),
-                            "</ol>",
-                            "</div>"
-                        ]),
-                        unsafe_allow_html=True
-                    )
-                    
-
-
-if __name__ == '__main__':
-    main()
